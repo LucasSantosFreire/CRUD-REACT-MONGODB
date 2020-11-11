@@ -3,13 +3,19 @@ import { useForm } from 'react-hook-form'
 import {Forms, Input, Row, Text, Titulo} from './style'
 import Cards from '../cards'
 import axios from 'axios'
+import Modal from 'react-modal'
+
+axios.defaults.baseURL = 'https://node-easy-notes-test.herokuapp.com';
 
  function Form() {
     const [cards, setCards] = useState([]);
     const [editCard, setEditCard] = useState();
     const [idEdit, setIdEdit] = useState();
     const [editando, setEditando] = useState(false);
+    const [modal, setModal] = useState(false);
+    const [modalInfo, setModalInfo] = useState({});
     const { register, handleSubmit, reset } = useForm();
+    const { register: registerSearch, handleSubmit: handleSearch, reset: resetSearch } = useForm();
     
 
     useEffect(() => {
@@ -63,6 +69,21 @@ import axios from 'axios'
       setEditando(false);
      }
 
+
+     const filtrar = async (data) => {
+       const {_id} = data;
+       try{
+        await axios.get("/notes/"+_id).then(response => {
+          resetSearch();
+          setModal(true);
+          setModalInfo(response.data);
+        })
+        }catch(error){
+          resetSearch();
+          alert("O id informado não existe.");
+        }
+     }
+
     return (
       <div>
       {editando ? (
@@ -76,15 +97,30 @@ import axios from 'axios'
         </div>
       ):(
       <div>
+      <div>
       <Titulo>Adicionar anotação</Titulo>
       <Forms onSubmit={handleSubmit(onSubmit)}>
         <Input type="text" id="Titulo" placeholder="Titulo" defaultValue="" name="Titulo" ref={register({required: true, maxLength: 80})} />
         <Text text placeholder="Anotação" id="Texto" defaultValue="" name="Texto" ref={register({required: true, maxLength: 200})} />
         <Input botao type="submit" value="Adicionar"/>
       </Forms>
-      </div>
+      </div>  
+    </div>
       )
       }
+        <div>
+          <Forms searchform onSubmit={handleSearch(filtrar)}>
+            <Input searchbar type="text" id="_id" placeholder="Digite um id" defaultValue="" name="_id" ref={registerSearch({required: true, maxLength: 80})}></Input>
+            <Input botao type="submit" value="Pesquisar"></Input>
+          </Forms>
+        </div>
+        <did>
+        <Modal className="Modal" isOpen={modal}>
+          <h1>{modalInfo.title}</h1>
+          <text>{modalInfo.content}</text>
+          <button className="Botao" onClick={() => setModal(false)}>Fechar</button>
+        </Modal>
+      </did>
       <Row>
         <Cards cards={cards} deletar={deleteCard} editar={editarCard}/>
       </Row>

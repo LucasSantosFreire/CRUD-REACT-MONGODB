@@ -1,5 +1,6 @@
 import styled, {css} from 'styled-components' 
 
+
 const Input = styled.input`
 width: 30%;
 padding: 12px 20px;
@@ -15,6 +16,10 @@ ${props => props.botao && css`
   border: none;
   width: 15%;
 `}
+${props => props.searchbar && css`
+  margin-right : 10px;
+`}
+
 `
 
 const Text = styled.textarea`
@@ -37,6 +42,10 @@ display: flex;
 justify-content: center;
 align-items: center;
 flex-direction: column;
+
+${props => props.searchform && css`
+flex-direction: row;
+`}
 `
 
 const Row = styled.div`
