@@ -5,7 +5,7 @@ import Cards from '../cards'
 import axios from 'axios'
 import Modal from 'react-modal'
 
-axios.defaults.baseURL = 'https://node-easy-notes-test.herokuapp.com';
+axios.defaults.baseURL = ''; {/*URL DO BACK AI CONSAGRADO*/}
 
  function Form() {
     const [cards, setCards] = useState([]);
